@@ -9,7 +9,7 @@ from collections import defaultdict
 
 def main():
     expected: DefaultDict[int, Tuple[Optional[str], Optional[str]]] = defaultdict(lambda: ('', ''), {
-        0: ('', '')
+        1: ('1482', '1518')
     })
 
     for i in range(1, 1 + 25):
@@ -28,7 +28,7 @@ def run_day(day: int, cmd: str = 'python') -> Optional[Tuple[Optional[str], Opti
     except:
         return None
     try:
-        return run_process('%s day%d.py' % (cmd, day))
+        return run_process('%s day%02d.py' % (cmd, day))
     except:
         return None
     finally:
