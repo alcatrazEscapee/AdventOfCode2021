@@ -9,7 +9,8 @@ from collections import defaultdict
 
 def main():
     expected: DefaultDict[int, Tuple[Optional[str], Optional[str]]] = defaultdict(lambda: ('', ''), {
-        1: ('1482', '1518')
+        1: ('1482', '1518'),
+        2: ('1714680', '1963088820')
     })
 
     for i in range(1, 1 + 25):
