@@ -2,16 +2,17 @@
 # Leaderboard Rank: 27 / 12
 
 from utils import get_input, ints
-from typing import Set, List
+from typing import Set, Tuple
 
+BingoBoard = Tuple[Tuple[int, ...], ...]
 
 def main():
     # Parse input
-    text = get_input()
-    order = ints(text.split('\n')[0])
-    boards = [[list(ints(row)) for row in board.split('\n')] for board in text.split('\n\n')[1:]]
+    order, *boards = get_input().split('\n\n')
+    order = ints(order)
+    boards = [tuple(ints(row) for row in board.split('\n')) for board in boards]
 
-    last_score = None
+    first = last = None
     called = set()
     for call in order:
         called.add(call)
@@ -19,27 +20,30 @@ def main():
         remaining = []
         for idx, board in enumerate(boards):
             if victory(board, called):
-                if last_score is None:
-                    # Part 1 is the first board to victory
-                    print('Part 1:', score(board, called, call))
-                last_score = score(board, called, call)
+                if first is None:
+                    first = score(board, called, call)
             else:
                 remaining.append(board)
 
-        # Remove any boards that have already won
+        # Remove any boards that have already won, and record the last board
+        if not remaining:
+            last = score(boards[0], called, call)  # Assumes a single unique last winner as per the problem definition
+            break
+
         boards = remaining
 
-    # Part 2 is the final board to win
-    print('Part 2:', last_score)
+    print('Part 1:', first)
+    print('Part 2:', last)
 
 
-def victory(board: List[List[int]], called: Set[int]) -> bool:
-    for i in range(5):  # Check every row and column for a bingo
-        if all(board[i][j] in called for j in range(5)) or all(board[j][i] in called for j in range(5)):
-            return True
-    return False  # Otherwise, this board has not won yet
+def victory(board: BingoBoard, called: Set[int]) -> bool:
+    return any(
+        all(board[i][j] in called for j in range(5)) or
+        all(board[j][i] in called for j in range(5))
+        for i in range(5)
+    )
 
-def score(board: List[List[int]], called: Set[int], last: int) -> int:
+def score(board: BingoBoard, called: Set[int], last: int) -> int:
     # Sum of all not-called numbers on the board multiplied by the last called value
     return sum(x for row in board for x in row if x not in called) * last
 
