@@ -34,17 +34,10 @@ def main():
 
 
 def victory(board: List[List[int]], called: Set[int]) -> bool:
-    # Check every row and column
-    for i in range(5):
+    for i in range(5):  # Check every row and column for a bingo
         if all(board[i][j] in called for j in range(5)) or all(board[j][i] in called for j in range(5)):
             return True
-
-    # And then each diagonal
-    if all(board[i][i] in called for i in range(5)) or all(board[i][4 - i] in called for i in range(5)):
-        return True
-
-    # Otherwise, this board has not won yet
-    return False
+    return False  # Otherwise, this board has not won yet
 
 def score(board: List[List[int]], called: Set[int], last: int) -> int:
     # Sum of all not-called numbers on the board multiplied by the last called value
