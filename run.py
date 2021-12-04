@@ -11,7 +11,8 @@ def main():
     expected: DefaultDict[int, Tuple[Optional[str], Optional[str]]] = defaultdict(lambda: ('', ''), {
         1: ('1482', '1518'),
         2: ('1714680', '1963088820'),
-        3: ('3374136', '4432698')
+        3: ('3374136', '4432698'),
+        4: ('41503', '3178')
     })
 
     for i in range(1, 1 + 25):
