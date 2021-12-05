@@ -2,6 +2,7 @@
 
 from utils import get_input_lines, ints, sign
 from typing import List, Tuple, Iterable
+from collections import Counter
 
 
 def main():
@@ -11,18 +12,12 @@ def main():
 
 
 def run(lines: List[Tuple[int, ...]], diagonals: bool) -> int:
-    points = set()
-    duplicates = set()
-
+    count = Counter()
     for x0, y0, x1, y1 in lines:
         if x0 == x1 or y0 == y1 or diagonals:  # Either straight line, or we allow diagonals
             for p in project(x0, y0, x1, y1):
-                if p in points:
-                    duplicates.add(p)
-                else:
-                    points.add(p)
-
-    return len(duplicates)
+                count[p] += 1
+    return sum(c > 1 for c in count.values())
 
 def project(x0: int, y0: int, x1: int, y1: int) -> Iterable[Tuple[int, int]]:
     """ Projects points along the line (x0, y0) -> (x1, y1). Works for horizontal, vertical, or exactly diagonal lines. """
