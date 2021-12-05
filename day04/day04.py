@@ -18,7 +18,7 @@ def main():
         called.add(call)
 
         remaining = []
-        for idx, board in enumerate(boards):
+        for board in boards:
             if victory(board, called):
                 if first is None:
                     first = score(board, called, call)
@@ -46,7 +46,6 @@ def victory(board: BingoBoard, called: Set[int]) -> bool:
 def score(board: BingoBoard, called: Set[int], last: int) -> int:
     # Sum of all not-called numbers on the board multiplied by the last called value
     return sum(x for row in board for x in row if x not in called) * last
-
 
 if __name__ == '__main__':
     main()

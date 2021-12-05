@@ -14,3 +14,7 @@ def get_input_lines(path: str = './input.txt') -> List[str]:
 def ints(text: str, sign_prefixes: bool = True) -> Tuple[int, ...]:
     regex = r'([\-+]?\d+)' if sign_prefixes else r'(\d+)'
     return tuple(map(int, re.findall(regex, text)))
+
+def sign(a: int) -> int:
+    """ Returns the sign of a """
+    return 0 if a == 0 else (-1 if a < 0 else 1)
