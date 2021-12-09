@@ -6,7 +6,8 @@
 !/LICENSE.txt
 
 !/utils.py
-!/run.py
+!/main.py
+!/test.py
 
 !/day*/*.py
 !/day*/*.txt
