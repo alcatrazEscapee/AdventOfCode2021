@@ -1,12 +1,12 @@
 # Day 5: Hydrothermal Venture
 
-from utils import get_input_lines, ints, sign
+from utils import get_input, ints, sign
 from typing import List, Tuple, Iterable
 from collections import Counter
 
 
-def main():
-    lines: List[Tuple[int, ...]] = [ints(line) for line in get_input_lines()]
+def main(text: str):
+    lines: List[Tuple[int, ...]] = [ints(line) for line in text.split('\n')]
     print('Part 1:', run(lines, False))
     print('Part 2:', run(lines, True))
 
@@ -30,4 +30,4 @@ def project(x0: int, y0: int, x1: int, y1: int) -> Iterable[Tuple[int, int]]:
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())

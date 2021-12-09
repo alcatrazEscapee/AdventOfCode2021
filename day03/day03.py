@@ -3,11 +3,11 @@
 from typing import List
 from collections import Counter
 
-from utils import get_input_lines
+from utils import get_input
 
 
-def main():
-    rows: List[str] = get_input_lines()
+def main(text: str):
+    rows: List[str] = text.split('\n')
 
     gamma = epsilon = ''
     o2 = list(rows)
@@ -37,4 +37,4 @@ def reduce(values: List[str], i: int, hi: bool) -> List[str]:
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())

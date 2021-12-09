@@ -4,8 +4,8 @@ from utils import get_input, ints
 from typing import Tuple, Callable
 
 
-def main():
-    values = ints(get_input())
+def main(text: str):
+    values = ints(text)
 
     # Analytical improvements:
     # For part 1, we can show the target location will lie in an interval where there are equal number of points on either side (so +1/-1 of the median)
@@ -21,5 +21,6 @@ def main():
 def fuel(values: Tuple[int], cost: Callable[[int], int], lo: int, hi: int) -> int:
     return min(sum(cost(abs(p - c)) for c in values) for p in range(lo, 1 + hi))
 
+
 if __name__ == '__main__':
-    main()
+    main(get_input())

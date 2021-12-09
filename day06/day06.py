@@ -7,8 +7,8 @@ from typing import Tuple
 from collections import Counter
 
 
-def main():
-    values = ints(get_input())
+def main(text: str):
+    values = ints(text)
     print('Part 1:', run(values, 80))
     print('Part 2:', run(values, 256))
 
@@ -31,4 +31,4 @@ def run(values: Tuple[int, ...], iterations: int) -> int:
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())

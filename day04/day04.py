@@ -6,9 +6,9 @@ from typing import Set, Tuple
 
 BingoBoard = Tuple[Tuple[int, ...], ...]
 
-def main():
+def main(text: str):
     # Parse input
-    order, *boards = get_input().split('\n\n')
+    order, *boards = text.split('\n\n')
     order = ints(order)
     boards = [tuple(ints(row) for row in board.split('\n')) for board in boards]
 
@@ -47,5 +47,6 @@ def score(board: BingoBoard, called: Set[int], last: int) -> int:
     # Sum of all not-called numbers on the board multiplied by the last called value
     return sum(x for row in board for x in row if x not in called) * last
 
+
 if __name__ == '__main__':
-    main()
+    main(get_input())

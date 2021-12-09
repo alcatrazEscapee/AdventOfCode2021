@@ -1,14 +1,14 @@
 # Day 8: Seven Segment Search
 
-from utils import get_input_lines
+from utils import get_input
 
 
-def main():
+def main(text: str):
     letters = 'abcdefg'
     numbers = {'abcefg': 0, 'cf': 1, 'acdeg': 2, 'acdfg': 3, 'bcdf': 4, 'abdfg': 5, 'abdefg': 6, 'acf': 7, 'abcdefg': 8, 'abcdfg': 9}
 
     part1 = part2 = 0
-    for line in get_input_lines():
+    for line in text.split('\n'):
         digits, values = map(lambda x: x.split(' '), line.split(' | '))
 
         # Part 1: count the number of ones, fours, sevens, and eights in the values
@@ -50,4 +50,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())

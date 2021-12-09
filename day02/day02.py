@@ -1,9 +1,9 @@
-from utils import get_input_lines
+from utils import get_input
 
 
-def main():
+def main(text: str):
     aim = pos = part1_depth = part2_depth = 0
-    for line in get_input_lines():
+    for line in text.split('\n'):
         op, x = line.split(' ')  # op X
         x = int(x)
         if op == 'forward':
@@ -21,4 +21,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())
