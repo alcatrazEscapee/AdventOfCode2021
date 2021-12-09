@@ -1,37 +1,31 @@
 # Day 9: Smoke Basin
 # Leaderboard Rank: 60 / 20
 
-from utils import FiniteGrid, get_input_lines
+from utils import FiniteGrid, get_input
 from collections import Counter
 
 
-def main():
-    g = FiniteGrid.of_iter([[int(c) for c in line] for line in get_input_lines()], default=10)
+def main(text: str):
+    grid: FiniteGrid[int] = FiniteGrid.of_str(text, default='9').map_values(int)
 
     risk = 0
-    for x, y in g.locations():
-        p = g[x, y]
-        if p < g[x + 1, y] and p < g[x - 1, y] and p < g[x, y + 1] and p < g[x, y - 1]:
-            risk += 1 + p
+    for pos in grid.locations():
+        height = grid[pos]
+        if all(height < grid[adj] for adj in pos.neighbors()):
+            risk += 1 + height
 
     print('Part 1:', risk)
 
     basins = Counter()  # collect the number of points that terminate in any one basin
-    for x, y in g.locations():
-        if g[x, y] != 9:  # height 9 do not belong to any basin
-            while True:  # step from this point until we reach a sink
-                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    if g[x + dx, y + dy] < g[x, y]:
-                        x += dx
-                        y += dy
-                        break
-                else:  # Reached the bottom of a basin
-                    basins[x, y] += 1
-                    break
+    for pos in grid.locations():
+        if grid[pos] != 9:  # height 9 do not belong to any basin
+            while any(grid[low := adj] < grid[pos] for adj in pos.neighbors()):
+                pos = low  # Step downwards until we reach a low point
+            basins[pos] += 1
 
     a, b, c = basins.most_common(3)
     print('Part 2:', a[1] * b[1] * c[1])
 
 
 if __name__ == '__main__':
-    main()
+    main(get_input())
