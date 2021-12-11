@@ -33,3 +33,6 @@ def test_day9():
 
 def test_day10():
     assert run_day(10) == ('469755', '2762335572')
+
+def test_day11():
+    assert run_day(11) == ('1683', '788')

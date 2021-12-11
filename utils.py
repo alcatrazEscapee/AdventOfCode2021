@@ -44,6 +44,10 @@ class Point2(NamedTuple):
         yield Point2(self.x, self.y + 1)
         yield Point2(self.x, self.y - 1)
 
+    def moore_neighbors(self) -> Generator['Point2', None, None]:
+        for dx, dy in ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)):
+            yield Point2(self.x + dx, self.y + dy)
+
 
 class FiniteGrid(Generic[T]):
 
