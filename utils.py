@@ -92,6 +92,9 @@ class FiniteGrid(Generic[T]):
     def __contains__(self, key: Tuple[int, int]) -> bool:
         return 0 <= key[0] < self.width and 0 <= key[1] < self.height
 
+    def __len__(self) -> int:
+        return len(self.array)
+
     def __eq__(self, other):
         return other is not None and isinstance(other, FiniteGrid) and self.array == other.array
 
