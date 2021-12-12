@@ -1,5 +1,5 @@
 
-from main import run_day
+from main import run_day, run_day_with_example
 
 # Tests for all AoC Puzzles
 
@@ -36,3 +36,9 @@ def test_day10():
 
 def test_day11():
     assert run_day(11) == ('1683', '788')
+
+def test_day12():
+    assert run_day_with_example(12, 1) == ('10', '36')
+    assert run_day_with_example(12, 2) == ('19', '103')
+    assert run_day_with_example(12, 3) == ('226', '3509')
+    assert run_day(12) == ('4338', '114189')
