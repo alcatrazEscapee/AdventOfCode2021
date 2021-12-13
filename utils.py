@@ -1,7 +1,9 @@
 
-from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator
+from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator, DefaultDict, Iterable
+from collections import defaultdict
 
 import re
+import functools
 
 
 T = TypeVar('T')
@@ -16,16 +18,20 @@ def ints(text: str, sign_prefixes: bool = True) -> Tuple[int, ...]:
     regex = r'([\-+]?\d+)' if sign_prefixes else r'(\d+)'
     return tuple(map(int, re.findall(regex, text)))
 
+def min_max(x: Iterable[int]) -> Tuple[int, int]:
+    """ Returns both the min and max of a sequence.
+    This, rather than calling min(x), max(x), will work when a generator (or other single-use iterator) is passed in
+    """
+    try:
+        seq = iter(x)
+        start = next(seq)
+    except StopIteration:
+        raise ValueError('min_max() arg is an empty sequence')
+    return functools.reduce(lambda left, right: (min(left[0], right), max(left[1], right)), seq, (start, start))
+
 def sign(a: int) -> int:
     """ Returns the sign of a """
     return 0 if a == 0 else (-1 if a < 0 else 1)
-
-def neighbors2(p: Tuple[int, int]) -> Generator[Tuple[int, int], None, None]:
-    x, y = p
-    yield x + 1, y
-    yield x - 1, y
-    yield x, y + 1
-    yield x, y - 1
 
 
 class Point2(NamedTuple):
@@ -137,3 +143,46 @@ class FiniteGrid(Generic[T]):
         for y in range(self.height):
             for x in range(self.width):
                 yield Point2(x, y)
+
+    def infinite(self) -> 'InfiniteGrid[T]':
+        return InfiniteGrid(self.default, ((k, self[k]) for k in self.locations()))
+
+
+class InfiniteGrid(Generic[T]):
+
+    def __init__(self, default: Optional[T], fill: Iterable[Tuple[Tuple[int, int], T]]):
+        self.data: DefaultDict[Tuple[int, int], T] = defaultdict(lambda: default)
+        self.default: Optional[T] = default
+        for k, v in fill:
+            self.data[k] = v
+
+    def __getitem__(self, key: Tuple[int, int]) -> T:
+        return self.data[key]
+
+    def __setitem__(self, key: Tuple[int, int], value: T):
+        self.data[Point2(*key)] = value
+
+    def __contains__(self, key: Tuple[int, int]) -> bool:
+        return key in self.data
+
+    def __eq__(self, other):
+        return other is not None and isinstance(other, InfiniteGrid) and self.data == other.data
+
+    def __repr__(self):
+        _, _, width, height = self.bounds()
+        return '[%d x %d Infinite Grid]:\n%s' % (width, height, str(self))
+
+    def __str__(self) -> str:
+        min_x, min_y, width, height = self.bounds()
+        return '\n'.join(''.join(str(self[min_x + dx, min_y + dy]) for dx in range(width)) for dy in range(height))
+
+    def locations(self) -> Generator[Point2, None, None]:
+        """ An iterator over all coordinate positions within the grid """
+        for key in self.data.keys():
+            yield Point2(*key)
+
+    def bounds(self) -> Tuple[int, int, int, int]:
+        """ Returns the minimum bounding box of this grid, in a (min_x, min_y, width, height) tuple """
+        min_x, max_x = min_max((k.x for k in self.locations()))
+        min_y, max_y = min_max((k.y for k in self.locations()))
+        return min_x, min_y, 1 + max_x - min_x, 1 + max_y - min_y
