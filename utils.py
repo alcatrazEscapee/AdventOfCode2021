@@ -18,6 +18,16 @@ def ints(text: str, sign_prefixes: bool = True) -> Tuple[int, ...]:
     regex = r'([\-+]?\d+)' if sign_prefixes else r'(\d+)'
     return tuple(map(int, re.findall(regex, text)))
 
+def windows(x: Iterable[T], n: int) -> Generator[Tuple[T, ...], None, None]:
+    """ Returns sliding windows of n length across the sequence x """
+    seq = []
+    for e in x:
+        seq.append(e)
+        if len(seq) > n:
+            seq.pop(0)
+        if len(seq) == n:
+            yield tuple(seq)
+
 def min_max(x: Iterable[int]) -> Tuple[int, int]:
     """ Returns both the min and max of a sequence. """
     return min(seq := list(x)), max(seq)  # collapse single use iterators for re-use
