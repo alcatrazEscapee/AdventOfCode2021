@@ -44,4 +44,4 @@ def test_day12():
     assert run_day(12) == ('4338', '114189')
 
 def test_day13():
-    assert run_day(13) == ('810', None)
+    assert run_day(13) == ('810', 'HLBUBGFR')

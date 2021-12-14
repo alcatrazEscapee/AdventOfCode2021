@@ -1,12 +1,12 @@
 
-from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator, DefaultDict, Iterable
+from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator, DefaultDict, Iterable, Mapping
 from collections import defaultdict
 
 import re
-import functools
 
 
 T = TypeVar('T')
+K = TypeVar('K')
 V = TypeVar('V')
 
 
@@ -19,19 +19,17 @@ def ints(text: str, sign_prefixes: bool = True) -> Tuple[int, ...]:
     return tuple(map(int, re.findall(regex, text)))
 
 def min_max(x: Iterable[int]) -> Tuple[int, int]:
-    """ Returns both the min and max of a sequence.
-    This, rather than calling min(x), max(x), will work when a generator (or other single-use iterator) is passed in
-    """
-    try:
-        seq = iter(x)
-        start = next(seq)
-    except StopIteration:
-        raise ValueError('min_max() arg is an empty sequence')
-    return functools.reduce(lambda left, right: (min(left[0], right), max(left[1], right)), seq, (start, start))
+    """ Returns both the min and max of a sequence. """
+    return min(seq := list(x)), max(seq)  # collapse single use iterators for re-use
 
 def sign(a: int) -> int:
     """ Returns the sign of a """
     return 0 if a == 0 else (-1 if a < 0 else 1)
+
+def map_to_callable(d: Mapping[K, V], default: V = None) -> Callable[[K], V]:
+    def apply(k: K) -> V:
+        return d[k] if k in d else default
+    return apply
 
 
 class Point2(NamedTuple):
@@ -150,6 +148,10 @@ class FiniteGrid(Generic[T]):
 
 class InfiniteGrid(Generic[T]):
 
+    @staticmethod
+    def of_points(points: Iterable[Tuple[int, int]], default: T = '.', point: T = '#') -> 'InfiniteGrid[T]':
+        return InfiniteGrid(default, ((p, point) for p in points))
+
     def __init__(self, default: Optional[T], fill: Iterable[Tuple[Tuple[int, int], T]]):
         self.data: DefaultDict[Tuple[int, int], T] = defaultdict(lambda: default)
         self.default: Optional[T] = default
@@ -175,6 +177,9 @@ class InfiniteGrid(Generic[T]):
     def __str__(self) -> str:
         min_x, min_y, width, height = self.bounds()
         return '\n'.join(''.join(str(self[min_x + dx, min_y + dy]) for dx in range(width)) for dy in range(height))
+
+    def map_values(self, f: Callable[[T], V]) -> 'InfiniteGrid[V]':
+        return InfiniteGrid(f(self.default), ((k, f(v)) for k, v in self.data.items()))
 
     def locations(self) -> Generator[Point2, None, None]:
         """ An iterator over all coordinate positions within the grid """
