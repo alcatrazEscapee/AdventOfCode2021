@@ -122,8 +122,8 @@ class FiniteGrid(Generic[T]):
     def __str__(self) -> str:
         return '\n'.join(''.join(str(self.array[x + self.width * y]) for x in range(self.width)) for y in range(self.height))
 
-    def map(self, f: Callable[[int, int], T]) -> 'FiniteGrid[T]':
-        return FiniteGrid(self.width, self.height, [f(x, y) for x, y in self.locations()], self.default, self.wrap)
+    def map(self, f: Callable[[Point2], T]) -> 'FiniteGrid[T]':
+        return FiniteGrid(self.width, self.height, [f(pos) for pos in self.locations()], self.default, self.wrap)
 
     def map_values(self, f: Callable[[T], V]) -> 'FiniteGrid[V]':
         return FiniteGrid(self.width, self.height, [f(v) for v in self.array], f(self.default) if self.default is not None else None, self.wrap)
@@ -136,11 +136,11 @@ class FiniteGrid(Generic[T]):
         for y in range(self.height):
             yield self.array[col + self.width * y]
 
-    def copy(self) -> 'FiniteGrid[T]': return self.map(lambda x, y: self[x, y])
-    def rotate_cw(self) -> 'FiniteGrid[T]': return self.map(lambda x, y: self[y, self.width - 1 - x])
-    def rotate_ccw(self) -> 'FiniteGrid[T]': return self.map(lambda x, y: self[self.height - 1 - y, x])
-    def mirror_y(self) -> 'FiniteGrid[T]': return self.map(lambda x, y: self[self.width - 1 - x, y])
-    def mirror_x(self) -> 'FiniteGrid[T]': return self.map(lambda x, y: self[x, self.height - 1 - y])
+    def copy(self) -> 'FiniteGrid[T]': return self.map(lambda p: self[p])
+    def rotate_cw(self) -> 'FiniteGrid[T]': return self.map(lambda p: self[p.y, self.width - 1 - p.x])
+    def rotate_ccw(self) -> 'FiniteGrid[T]': return self.map(lambda p: self[self.height - 1 - p.y, p.x])
+    def mirror_y(self) -> 'FiniteGrid[T]': return self.map(lambda p: self[self.width - 1 - p.x, p.y])
+    def mirror_x(self) -> 'FiniteGrid[T]': return self.map(lambda p: self[p.x, self.height - 1 - p.y])
 
     def permutations(self) -> Generator['FiniteGrid[T]', None, None]:
         """ Iterates through all permutations (rotations and mirrors) of this grid """
