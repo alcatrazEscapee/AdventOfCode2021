@@ -49,3 +49,7 @@ def test_day13():
 def test_day14():
     assert run_day_with_example(14, 1) == ('1588', '2188189693529')
     assert run_day(14) == ('2712', '8336623059567')
+
+def test_day15():
+    assert run_day_with_example(15, 1) == ('40', '315')
+    assert run_day(15) == ('503', '2853')

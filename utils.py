@@ -66,6 +66,10 @@ class Point2(NamedTuple):
 class FiniteGrid(Generic[T]):
 
     @staticmethod
+    def of_empty(width: int, height: int, default: Optional[T] = None, wrap: bool = False) -> 'FiniteGrid[T]':
+        return FiniteGrid(width, height, [default] * width * height, default, wrap)
+
+    @staticmethod
     def of_str(s: str, default: Optional[T] = None, wrap: bool = False) -> 'FiniteGrid[T]':
         return FiniteGrid.of_iter(s.strip().split('\n'), default, wrap)
 
