@@ -53,3 +53,24 @@ def test_day14():
 def test_day15():
     assert run_day_with_example(15, 1) == ('40', '315')
     assert run_day(15) == ('503', '2853')
+
+def test_day16():
+    assert run_day(16, 'D2FE28') == ('6', '2021')
+    assert run_day(16, '38006F45291200') == ('9', '1')
+    assert run_day(16, 'EE00D40C823060') == ('14', '3')
+
+    assert run_day(16, '8A004A801A8002F478')[0] == '16'
+    assert run_day(16, '620080001611562C8802118E34')[0] == '12'
+    assert run_day(16, 'C0015000016115A2E0802F182340')[0] == '23'
+    assert run_day(16, 'A0016C880162017C3686B18A3D4780')[0] == '31'
+
+    assert run_day(16, 'C200B40A82')[1] == '3'
+    assert run_day(16, '04005AC33890')[1] == '54'
+    assert run_day(16, '880086C3E88112')[1] == '7'
+    assert run_day(16, 'CE00C43D881120')[1] == '9'
+    assert run_day(16, 'D8005AC2A8F0')[1] == '1'
+    assert run_day(16, 'F600BC2D8F')[1] == '0'
+    assert run_day(16, '9C005AC2F8F0')[1] == '0'
+    assert run_day(16, '9C0141080250320F1802104A08')[1] == '1'
+
+    assert run_day(16) == ('879', '539051801941')
