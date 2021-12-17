@@ -74,3 +74,7 @@ def test_day16():
     assert run_day(16, '9C0141080250320F1802104A08')[1] == '1'
 
     assert run_day(16) == ('879', '539051801941')
+
+def test_day17():
+    assert run_day(17, 'target area: x=20..30, y=-10..-5') == ('45', '112')
+    assert run_day(17) == ('15931', '2555')

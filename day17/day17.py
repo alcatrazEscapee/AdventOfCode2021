@@ -1,50 +1,28 @@
-from utils import get_input, ints, sign
+from utils import get_input, ints
 
 
 def main(text: str):
-    global MINX, MAXX, MINY, MAXY
-    MINX, MAXX, MINY, MAXY = ints(text)
+    min_x, max_x, min_y, max_y = ints(text)
 
-    # target area: x=70..96, y=-179..-124
-    my = 0
-    count = 0
-    for vx in range(1, 1000):
-        for vy in range(-1000, 1000):
+    velocities = set()
+    for xt in range(min_x, 1 + max_x):
+        for yt in range(min_y, 1 + max_y):
+            for n in range(1, 1 + 2 * abs(yt)):
+                if (2 * yt) % n == 0 and (v0 := 2 * yt - n + n * n) % (2 * n) == 0:
+                    v = v0 // (2 * n)
+                    # Case: u <= n
+                    for u in range(1, 1 + min(n, abs(xt))):
+                        if u * (u + 1) == 2 * xt:
+                            velocities.add((u, v))
+                            break
+                    # Case: u > n
+                    if (2 * xt) % n == 0 and (u0 := 2 * xt - n + n * n) % (2 * n) == 0:
+                        u = u0 // (2 * n)
+                        if u > n:
+                            velocities.add((u, v))
 
-            win, max_y = shoot(vx, vy)
-            if win:
-                my = max(max_y, my)
-                count += 1
-    print('Part 1:', my)
-    print('Part 2:', count)
-
-
-def shoot(vx: int, vy: int):
-    x = 0
-    y = 0
-    y_max = 0
-    while True:
-        x += vx
-        y += vy
-
-        vx -= sign(vx)
-        vy -= 1
-
-        y_max = max(y, y_max)
-
-        if MINX <= x <= MAXX and MINY <= y <= MAXY:
-            return True, y_max
-
-        if y < MINY:
-            return False, 0  # no hit
-
-        if vx == 0:
-            if x < MINX or x > MAXX:
-                return False, 0
-
-        if vx > 0:
-            if x > MAXX:
-                return False, 0
+    print('Part 1:', max(v * (v + 1) // 2 for u, v in velocities))
+    print('Part 2:', len(velocities))
 
 
 if __name__ == '__main__':
