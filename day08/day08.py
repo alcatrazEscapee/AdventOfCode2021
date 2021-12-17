@@ -26,7 +26,7 @@ def main(text: str):
         six = next(d for d in digits if len(d) == 6 and any(v not in d for v in one))  # 6 is the only length 6 digit that has a segment that isn't in 1
 
         a = next(v for v in seven if v not in one)  # 'a', present in 7 but not 1
-        c = next(v for v in letters if v not in six)  # 'c', only one missing from 6
+        c = next(v for v in letters if v not in six)  # 'c', only segment missing from 6
         f = next(v for v in one if v != c)  # 'f', the only other segment in 1 now that 'c' is known
 
         two_three_five = [v for v in digits if len(v) == 5]  # 2, 3, and 5 are the only length 5 digits
@@ -35,9 +35,9 @@ def main(text: str):
         two = next(v for v in two_three_five if c in v and f not in v)  # 2 has 'c' but not 'f'
 
         b = next(v for v in five if v not in two and v not in one)  # 'b' is unique in 5, given it's not in 2 or 1
-        e = next(v for v in two if v not in five and v not in one)  # 'e' is unique in 5, given it's not in 2 or 1
-        d = next(v for v in four if v not in {b, c, f})  # 'd', only missing letter from 4
-        g = next(v for v in letters if v not in {a, b, c, d, e, f})  # 'g', only missing letter
+        e = next(v for v in two if v not in five and v not in one)  # 'e' is unique in 2, given it's not in 5 or 1
+        d = next(v for v in four if v not in {b, c, f})  # 'd', only missing segment from 4
+        g = next(v for v in letters if v not in {a, b, c, d, e, f})  # 'g', last remaining segment
 
         segments = {a: 'a', b: 'b', c: 'c', d: 'd', e: 'e', f: 'f', g: 'g'}
         part2 += sum(
