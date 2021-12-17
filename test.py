@@ -77,4 +77,5 @@ def test_day16():
 
 def test_day17():
     assert run_day(17, 'target area: x=20..30, y=-10..-5') == ('45', '112')
+    assert run_day(17, 'target area: x=352..377, y=-49..-30') == ('66', '820')  # Edge case inducing input from https://www.reddit.com/r/adventofcode/comments/rid0g3/2021_day_17_part_1_an_input_that_might_break_your/
     assert run_day(17) == ('15931', '2555')
