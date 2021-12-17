@@ -13,7 +13,7 @@ def main(text: str):
                 for xt in range(min_x, 1 + max_x):
                     # Case: u <= n
                     k = sqrt(2 * xt)
-                    for u in range(floor(k), 1 + ceil(k)):
+                    for u in range(floor(k) - 1, 1 + ceil(k)):
                         if u <= n and u * (u + 1) == 2 * xt:
                             velocities.add((u, v))
                     # Case: u > n
@@ -22,7 +22,7 @@ def main(text: str):
                         if u > n:
                             velocities.add((u, v))
 
-    print('Part 1:', max(v * (v + 1) // 2 for u, v in velocities))
+    print('Part 1:', max(v * (v + 1) // 2 for _, v in velocities))
     print('Part 2:', len(velocities))
 
 
