@@ -1,5 +1,6 @@
 
 from main import run_day, run_day_with_example
+from day18 import day18
 
 # Tests for all AoC Puzzles
 
@@ -79,3 +80,38 @@ def test_day17():
     assert run_day(17, 'target area: x=20..30, y=-10..-5') == ('45', '112')
     assert run_day(17, 'target area: x=352..377, y=-49..-30') == ('66', '820')  # Edge case inducing input from https://www.reddit.com/r/adventofcode/comments/rid0g3/2021_day_17_part_1_an_input_that_might_break_your/
     assert run_day(17) == ('15931', '2555')
+
+def test_day18_explode():
+    assert day18_explode([[[[[9, 8], 1], 2], 3], 4]) == [[[[0, 9], 2], 3], 4]
+    assert day18_explode([7, [6, [5, [4, [3, 2]]]]]) == [7, [6, [5, [7, 0]]]]
+    assert day18_explode([[6, [5, [4, [3, 2]]]], 1]) == [[6, [5, [7, 0]]], 3]
+    assert day18_explode([[3, [2, [1, [7, 3]]]], [6, [5, [4, [3, 2]]]]]) == [[3, [2, [8, 0]]], [9, [5, [4, [3, 2]]]]]
+    assert day18_explode([[3, [2, [8, 0]]], [9, [5, [4, [3, 2]]]]]) == [[3, [2, [8, 0]]], [9, [5, [7, 0]]]]
+    assert day18_explode([[[[[4, 3], 4], 4], [7, [[8, 4], 9]]], [1, 1]]) == [[[[0, 7], 4], [7, [[8, 4], 9]]], [1, 1]]
+    assert day18_explode([[[[0, 7], 4], [7, [[8, 4], 9]]], [1, 1]]) == [[[[0, 7], 4], [15, [0, 13]]], [1, 1]]
+
+def test_day18_split():
+    assert day18_split([[[[0, 7], 4], [15, [0, 13]]], [1, 1]]) == [[[[0, 7], 4], [[7, 8], [0, 13]]], [1, 1]]
+    assert day18_split([[[[0, 7], 4], [[7, 8], [0, 13]]], [1, 1]]) == [[[[0, 7], 4], [[7, 8], [0, [6, 7]]]], [1, 1]]
+
+def test_day18_magnitude():
+    assert day18_magnitude([[1, 2], [[3, 4], 5]]) == 143
+    assert day18_magnitude([[[[0, 7], 4], [[7, 8], [6, 0]]], [8, 1]]) == 1384
+    assert day18_magnitude([[[[1, 1], [2, 2]], [3, 3]], [4, 4]]) == 445
+    assert day18_magnitude([[[[3, 0], [5, 3]], [4, 4]], [5, 5]]) == 791
+    assert day18_magnitude([[[[5, 0], [7, 4]], [5, 5]], [6, 6]]) == 1137
+    assert day18_magnitude([[[[8, 7], [7, 7]], [[8, 6], [7, 7]]], [[[0, 7], [6, 6]], [8, 7]]]) == 3488
+
+def test_day18():
+    assert run_day(18) == ('4017', '4583')
+
+def day18_explode(lists: day18.SnailNumber):
+    day18.try_explode(nodes := day18.convert(lists))
+    return nodes.listify()
+
+def day18_split(lists: day18.SnailNumber):
+    day18.try_split(nodes := day18.convert(lists))
+    return nodes.listify()
+
+def day18_magnitude(lists: day18.SnailNumber):
+    return day18.convert(lists).magnitude()
