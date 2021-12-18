@@ -105,13 +105,13 @@ def test_day18_magnitude():
 def test_day18():
     assert run_day(18) == ('4017', '4583')
 
-def day18_explode(lists: day18.SnailNumber):
+def day18_explode(lists: day18.SnailfishNumber) -> day18.SnailfishNumber:
     day18.try_explode(nodes := day18.convert(lists))
     return nodes.listify()
 
-def day18_split(lists: day18.SnailNumber):
+def day18_split(lists: day18.SnailfishNumber) -> day18.SnailfishNumber:
     day18.try_split(nodes := day18.convert(lists))
     return nodes.listify()
 
-def day18_magnitude(lists: day18.SnailNumber):
+def day18_magnitude(lists: day18.SnailfishNumber) -> int:
     return day18.convert(lists).magnitude()

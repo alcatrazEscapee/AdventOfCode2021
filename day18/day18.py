@@ -9,7 +9,7 @@ import math
 
 
 # Recursive Types
-SnailNumber = List[Union['SnailNumber', int]]
+SnailfishNumber = List[Union['SnailfishNumber', int]]
 
 
 class Node:
@@ -28,10 +28,7 @@ class Node:
         child.parent = self
 
     def __str__(self):
-        if self.value is not None:
-            return str(self.value)
-        else:
-            return '[' + str(self.left) + ',' + str(self.right) + ']'
+        return str(self.value) if self.value is not None else '[' + str(self.left) + ',' + str(self.right) + ']'
 
     def __add__(self, other):
         node = Node()
@@ -40,13 +37,11 @@ class Node:
         reduce(node)
         return node
 
-    def parent(self) -> Optional['Node']:
-        return self.parent
-
     def magnitude(self) -> int:
         return self.value if self.value is not None else 3 * self.left.magnitude() + 2 * self.right.magnitude()
 
-    def listify(self) -> SnailNumber:
+    def listify(self) -> SnailfishNumber:
+        """ Converts this tree representation of a snailfish number back into a list form """
         return self.value if self.value is not None else [self.left.listify(), self.right.listify()]
 
 
@@ -60,7 +55,7 @@ def main(text: str):
     ))
 
 
-def convert(number: SnailNumber) -> Node:
+def convert(number: SnailfishNumber) -> Node:
     """ Converts a snail number list-like specification into a node tree structure """
     if isinstance(number, list):
         node = Node()
