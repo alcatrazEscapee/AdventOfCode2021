@@ -116,6 +116,10 @@ def day18_split(lists: day18.SnailfishNumber) -> day18.SnailfishNumber:
 def day18_magnitude(lists: day18.SnailfishNumber) -> int:
     return day18.convert(lists).magnitude()
 
+def test_day19():
+    assert run_day_with_example(19, 0) == ('79', '3621')
+    assert run_day(19) == ('365', '11060')
+
 def test_day20():
     assert run_day_with_example(20, 0) == ('35', '3351')
     assert run_day(20) == ('5846', '21149')

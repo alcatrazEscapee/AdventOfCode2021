@@ -36,6 +36,16 @@ def sign(a: int) -> int:
     """ Returns the sign of a """
     return 0 if a == 0 else (-1 if a < 0 else 1)
 
+def cross(a: Sequence[int], b: Sequence[int]) -> Tuple[int, int, int]:
+    """ Returns the cross product of the three-dimensional vectors a and b"""
+    ax, ay, az = a
+    bx, by, bz = b
+    return ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx
+
+def sum_vec(x: Iterable[int], y: Iterable[int], s: int = 1) -> Tuple[int, ...]:
+    """ Returns the equation x + s * y for each element in the sequence x and y """
+    return tuple(a + s * b for a, b in zip(x, y))
+
 def map_to_callable(d: Mapping[K, V], default: V = None) -> Callable[[K], V]:
     def apply(k: K) -> V:
         return d[k] if k in d else default
