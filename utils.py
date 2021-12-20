@@ -42,6 +42,14 @@ def cross(a: Sequence[int], b: Sequence[int]) -> Tuple[int, int, int]:
     bx, by, bz = b
     return ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx
 
+def norm1(x: Iterable[int]) -> int:
+    """ Returns the manhattan distance (1-norm) of x """
+    return sum(map(abs, x))
+
+def norminf(x: Iterable[int]) -> int:
+    """ Returns the largest absolute coordinate (infinity-norm) of x """
+    return max(map(abs, x))
+
 def sum_vec(x: Iterable[int], y: Iterable[int], s: int = 1) -> Tuple[int, ...]:
     """ Returns the equation x + s * y for each element in the sequence x and y """
     return tuple(a + s * b for a, b in zip(x, y))
@@ -62,6 +70,12 @@ class Point2(NamedTuple):
     def __sub__(self, other: Tuple[int, int]) -> 'Point2':
         return Point2(self.x - other[0], self.y - other[1])
 
+    def norm1(self):
+        return norm1(self)
+
+    def norminf(self):
+        return norminf(self)
+
     def neighbors(self) -> Generator['Point2', None, None]:
         yield Point2(self.x + 1, self.y)
         yield Point2(self.x - 1, self.y)
@@ -72,6 +86,23 @@ class Point2(NamedTuple):
         for dx, dy in ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)):
             yield Point2(self.x + dx, self.y + dy)
 
+
+class Point3(NamedTuple):
+    x: int
+    y: int
+    z: int
+
+    def __add__(self, other: Tuple[int, int, int]) -> 'Point3':
+        return Point3(self.x + other[0], self.y + other[1], self.z + other[2])
+
+    def __sub__(self, other: Tuple[int, int, int]) -> 'Point3':
+        return Point3(self.x - other[0], self.y - other[1], self.z - other[2])
+
+    def norm1(self):
+        return norm1(self)
+
+    def norminf(self):
+        return norminf(self)
 
 class FiniteGrid(Generic[T]):
 
