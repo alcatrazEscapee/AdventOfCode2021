@@ -123,3 +123,7 @@ def test_day19():
 def test_day20():
     assert run_day_with_example(20, 0) == ('35', '3351')
     assert run_day(20) == ('5846', '21149')
+
+def test_day21():
+    assert run_day(21, '1 4\n 2 8') == ('739785', '444356092776315')
+    assert run_day(21) == ('571032', '49975322685009')

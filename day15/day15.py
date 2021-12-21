@@ -1,7 +1,7 @@
 # Day 15: Chiton
 # Leaderboard Rank: 60 / 147
 
-from utils import FiniteGrid, Point2, get_input
+from utils import FiniteGrid, Point2, get_input, cyclic_mod
 
 import heapq
 
@@ -10,7 +10,7 @@ def main(text: str):
     grid = FiniteGrid.of_str(text).map_values(int)
     grid5x5 = FiniteGrid.of_empty(grid.width * 5, grid.height * 5, 0)
     for x, y in grid5x5.locations():
-        grid5x5[x, y] = ((grid[x % grid.width, y % grid.height] + x // grid.width + y // grid.height - 1) % 9) + 1
+        grid5x5[x, y] = cyclic_mod(grid[x % grid.width, y % grid.height] + x // grid.width + y // grid.height, 1, 9)
 
     print('Part 1:', dijkstra(grid))
     print('Part 2:', dijkstra(grid5x5))

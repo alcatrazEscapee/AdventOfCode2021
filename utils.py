@@ -36,6 +36,10 @@ def sign(a: int) -> int:
     """ Returns the sign of a """
     return 0 if a == 0 else (-1 if a < 0 else 1)
 
+def cyclic_mod(value: int, min_inclusive: int, max_inclusive: int) -> int:
+    """ Given a value x, and a range [a, b], where x >= a, return the value at index x into the infinite cyclic array [a, a + 1... b, a, a + 1... b, ...] """
+    return ((value - min_inclusive) % (max_inclusive - min_inclusive + 1)) + min_inclusive
+
 def cross(a: Sequence[int], b: Sequence[int]) -> Tuple[int, int, int]:
     """ Returns the cross product of the three-dimensional vectors a and b"""
     ax, ay, az = a
