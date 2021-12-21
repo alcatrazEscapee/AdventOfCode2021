@@ -1,4 +1,4 @@
-from utils import InfiniteGrid, get_input, ints, map_to_callable
+from utils import InfiniteGrid, get_input, ints
 from aoc_font import recognize
 
 
@@ -20,7 +20,7 @@ def main(text: str):
 
     grid = InfiniteGrid.of_points(dots)
     print('Part 2:', recognize(grid))
-    print(grid.map_values(map_to_callable({'.': ' ', '#': '\u2588'})))
+    print(grid.map_values(lambda v: '\u2588' if v == '#' else ' '))
 
 
 def mirror(v: int, k: int) -> int:

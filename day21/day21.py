@@ -1,27 +1,20 @@
 from utils import get_input, ints, cyclic_mod
 
-from math import prod
 from collections import Counter
 from functools import lru_cache
 from typing import Tuple
 
 
 def main(text: str):
-    assert cyclic_mod(1, 1, 5) == 1
-    assert cyclic_mod(4, 1, 5) == 4
-    assert cyclic_mod(5, 1, 5) == 5
-    assert cyclic_mod(6, 1, 5) == 1
-    assert cyclic_mod(7, 1, 5) == 2
-
     p1, p2 = (ints(line)[-1] for line in text.split('\n'))
 
-    print('Part 1:', prod(play_deterministic_dice(p1, p2)))
+    print('Part 1:', play_deterministic_dice(p1, p2))
     print('Part 2:', max(play_dirac_dice(p1, p2)))
 
 
-def play_deterministic_dice(p1: int, p2: int, dice_state: int = 1, total_dice: int = 0, p1s: int = 0, p2s: int = 0) -> Tuple[int, int]:
+def play_deterministic_dice(p1: int, p2: int, dice_state: int = 1, total_dice: int = 0, p1s: int = 0, p2s: int = 0) -> int:
     """ p1, p2 are the player positions, p1s, p2s are the player's scores. The current turn to be taken is by player one.
-    Returns the pair of (total dice rolled, losing player's score)
+    Returns the product of total dice rolled * losing player's score
     """
     p1_dice, dice_state = deterministic_dice(dice_state)
     total_dice += 3
@@ -29,7 +22,7 @@ def play_deterministic_dice(p1: int, p2: int, dice_state: int = 1, total_dice: i
     p1s += p1
 
     if p1s >= 1000:
-        return total_dice, p2s
+        return total_dice * p2s
     return play_deterministic_dice(p2, p1, dice_state, total_dice, p2s, p1s)
 
 

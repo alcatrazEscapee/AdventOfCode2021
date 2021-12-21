@@ -10,9 +10,9 @@ def main(text: str):
     total_flashes = 0
 
     for step in count(1):
-        # All octopuses energy increases by one
+        # All octopuses' energy increases by one
         # Then each octopus with energy > 9 flashes, and all adjacent octopuses increment by one and flash, recursively.
-        # Finally, each octopus that flashed has it's energy reset to zero
+        # Finally, each octopus that flashed has its energy reset to zero
         queue = []
         for pos in grid.locations():
             grid[pos] += 1

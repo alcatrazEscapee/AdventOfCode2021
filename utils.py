@@ -18,15 +18,11 @@ def ints(text: str, sign_prefixes: bool = True) -> Tuple[int, ...]:
     regex = r'([\-+]?\d+)' if sign_prefixes else r'(\d+)'
     return tuple(map(int, re.findall(regex, text)))
 
-def windows(x: Iterable[T], n: int) -> Generator[Tuple[T, ...], None, None]:
+def windows(x: Sequence[T], n: int) -> Generator[Tuple[T, ...], None, None]:
     """ Returns sliding windows of n length across the sequence x """
-    seq = []
-    for e in x:
-        seq.append(e)
-        if len(seq) > n:
-            seq.pop(0)
-        if len(seq) == n:
-            yield tuple(seq)
+    if n <= len(x):
+        for i in range(1 + len(x) - n):
+            yield tuple(x[i:i + n])
 
 def min_max(x: Iterable[int]) -> Tuple[int, int]:
     """ Returns both the min and max of a sequence. """
@@ -37,11 +33,11 @@ def sign(a: int) -> int:
     return 0 if a == 0 else (-1 if a < 0 else 1)
 
 def cyclic_mod(value: int, min_inclusive: int, max_inclusive: int) -> int:
-    """ Given a value x, and a range [a, b], where x >= a, return the value at index x into the infinite cyclic array [a, a + 1... b, a, a + 1... b, ...] """
+    """ Given a value x and a range [a, b], wraps x so that it lies within the range [a, b] """
     return ((value - min_inclusive) % (max_inclusive - min_inclusive + 1)) + min_inclusive
 
 def cross(a: Sequence[int], b: Sequence[int]) -> Tuple[int, int, int]:
-    """ Returns the cross product of the three-dimensional vectors a and b"""
+    """ Returns the cross product of the three-dimensional vectors a and b """
     ax, ay, az = a
     bx, by, bz = b
     return ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx
@@ -49,19 +45,6 @@ def cross(a: Sequence[int], b: Sequence[int]) -> Tuple[int, int, int]:
 def norm1(x: Iterable[int]) -> int:
     """ Returns the manhattan distance (1-norm) of x """
     return sum(map(abs, x))
-
-def norminf(x: Iterable[int]) -> int:
-    """ Returns the largest absolute coordinate (infinity-norm) of x """
-    return max(map(abs, x))
-
-def sum_vec(x: Iterable[int], y: Iterable[int], s: int = 1) -> Tuple[int, ...]:
-    """ Returns the equation x + s * y for each element in the sequence x and y """
-    return tuple(a + s * b for a, b in zip(x, y))
-
-def map_to_callable(d: Mapping[K, V], default: V = None) -> Callable[[K], V]:
-    def apply(k: K) -> V:
-        return d[k] if k in d else default
-    return apply
 
 
 class Point2(NamedTuple):
@@ -77,9 +60,6 @@ class Point2(NamedTuple):
     def norm1(self):
         return norm1(self)
 
-    def norminf(self):
-        return norminf(self)
-
     def neighbors(self) -> Generator['Point2', None, None]:
         yield Point2(self.x + 1, self.y)
         yield Point2(self.x - 1, self.y)
@@ -87,8 +67,9 @@ class Point2(NamedTuple):
         yield Point2(self.x, self.y - 1)
 
     def moore_neighbors(self) -> Generator['Point2', None, None]:
-        for dx, dy in ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)):
-            yield Point2(self.x + dx, self.y + dy)
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                yield Point2(self.x + dx, self.y + dy)
 
 
 class Point3(NamedTuple):
@@ -105,8 +86,6 @@ class Point3(NamedTuple):
     def norm1(self):
         return norm1(self)
 
-    def norminf(self):
-        return norminf(self)
 
 class FiniteGrid(Generic[T]):
 
