@@ -49,9 +49,11 @@ def main():
         except Exception as e:
             print('Day %02d:' % day, e)
 
+def get_example(day: int, example: int) -> str:
+    return get_input('./day%02d/examples.txt' % day).split('\n\n=====\n\n')[example - 1]
+
 def run_day_with_example(day: int, example: int) -> PuzzleOutput:
-    examples = get_input('./day%02d/examples.txt' % day).split('\n\n=====\n\n')
-    return run_day(day, examples[example - 1])
+    return run_day(day, get_example(day, example))
 
 def run_day(day: int, inp: Optional[str] = None) -> PuzzleOutput:
     if inp is None:

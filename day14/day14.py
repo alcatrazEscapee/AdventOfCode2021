@@ -36,7 +36,6 @@ def main(text: str):
 
 def checksum(elements: Counter):
     most, *_, least = elements.most_common()
-    print(most, _, least)
     return most[1] - least[1]
 
 

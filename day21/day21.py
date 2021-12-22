@@ -34,7 +34,7 @@ def deterministic_dice(state: int) -> Tuple[int, int]:
 
 @lru_cache(None)
 def play_dirac_dice(p1: int, p2: int, p1s: int = 0, p2s: int = 0) -> Tuple[int, int]:
-    """ p1, p2 are the player positions. p1s, p2s are the player's scores. The current turn to be taken is by player one .
+    """ p1, p2 are the player positions. p1s, p2s are the player's scores. The current turn to be taken is by player one
     Returns the pair of counts of universes in which p1 and p2 win, respectively.
     """
     p1_wins = p2_wins = 0  # Counts of the universes in which each player wins

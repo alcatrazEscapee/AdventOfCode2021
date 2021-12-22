@@ -44,25 +44,29 @@ class Box(NamedTuple):
 
 
 def main(text: str):
-    boxes = [(line.split(' ')[0], Box(*ints(line))) for line in text.split('\n')]
+    boxes = parse(text)
     print('Part 1:', solve_part1(boxes))
     print('Part 2:', solve_part2(boxes))
+
+
+def parse(text: str) -> List[Tuple[str, Box]]:
+    return [(line.split(' ')[0], Box(*ints(line))) for line in text.split('\n')]
 
 
 def solve_part1(boxes: List[Tuple[str, Box]]) -> int:
     """ This solves part 1, in a naive (but simple) solution: simply enumerate all the points in each box, since we're bounded by a 100x100x100 region. """
     on = set()
     for step, box in boxes:
-        box = {
+        points = {
             (x, y, z)
             for x in range(max(-50, box.x0), 1 + min(50, box.x1))
             for y in range(max(-50, box.y0), 1 + min(50, box.y1))
             for z in range(max(-50, box.z0), 1 + min(50, box.z1))
         }
         if step == 'on':
-            on |= box
+            on |= points
         else:
-            on -= box
+            on -= points
     return len(on)
 
 
@@ -102,6 +106,44 @@ def solve_part2(boxes: List[Tuple[str, Box]]) -> int:
                     on.append(to_add)
 
     return sum(map(Box.area, on))
+
+
+def solve_part2_coordinate_subdivision(boxes: List[Tuple[str, Box]]) -> int:
+    """ An alternative method to solve part 2 which uses coordinate subdivisions to make a new grid.
+    On the puzzle input, this is roughly a 800x800x800 grid, which actually takes some time to compute through (~3 min)
+    It runs all the examples however, in under 3 seconds.
+    """
+    # The boxes are in [a, b] form. Replace them with coordinate divisions that are [a, b)
+    x_divisions = sorted({b.x0 for _, b in boxes} | {b.x1 + 1 for _, b in boxes})
+    y_divisions = sorted({b.y0 for _, b in boxes} | {b.y1 + 1 for _, b in boxes})
+    z_divisions = sorted({b.z0 for _, b in boxes} | {b.z1 + 1 for _, b in boxes})
+
+    # Map of lower corner coordinates to index into the divisions
+    x_index = {x: i for i, x in enumerate(x_divisions)}
+    y_index = {y: i for i, y in enumerate(y_divisions)}
+    z_index = {z: i for i, z in enumerate(z_divisions)}
+
+    on = set()
+    for step, box in boxes:
+        points = {
+            (x, y, z)
+            for x in range(x_index[box.x0], x_index[box.x1 + 1])
+            for y in range(y_index[box.y0], y_index[box.y1 + 1])
+            for z in range(z_index[box.z0], z_index[box.z1 + 1])
+        }
+        if step == 'on':
+            on |= points
+        else:
+            on -= points
+
+    # Calculate the actual area held by all boxes
+    def area(pos: Tuple[int, int, int]) -> int:
+        x, y, z = pos
+        return ((x_divisions[x + 1] - x_divisions[x]) *
+                (y_divisions[y + 1] - y_divisions[y]) *
+                (z_divisions[z + 1] - z_divisions[z]))
+
+    return sum(map(area, on))
 
 
 if __name__ == '__main__':
