@@ -2,6 +2,7 @@
 from main import run_day, run_day_with_example, get_example
 from day18 import day18
 from day22 import day22
+from day23 import day23
 
 # Tests for all AoC Puzzles
 
@@ -142,3 +143,18 @@ def test_day22_coordinate_subdivisions():
 
 def day22_coordinate_subdivision(example: int) -> int:
     return day22.solve_part2_coordinate_subdivision(day22.parse(get_example(22, example)))
+
+def test_day23():
+    assert run_day_with_example(23, 1) == ('12521', '44169')
+    assert run_day(23) == ('11120', '49232')
+
+def test_day23_to_index_to_position():
+    for i in range(1 + 10):
+        assert day23.to_index(i, 0) == i
+        assert day23.to_position(i) == (i, 0)
+
+    for i, x in zip(range(4), (2, 4, 6, 8)):
+        assert day23.to_index(x, 1) == 11 + i
+        assert day23.to_index(x, 2) == 15 + i
+        assert day23.to_position(11 + i) == (x, 1)
+        assert day23.to_position(15 + i) == (x, 2)
