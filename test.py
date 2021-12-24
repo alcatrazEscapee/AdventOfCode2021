@@ -1,8 +1,10 @@
 
-from main import run_day, run_day_with_example, get_example
+from main import run_day, run_day_with_example, get_day_input, get_example
+
 from day18 import day18
 from day22 import day22
 from day23 import day23
+from day24 import day24
 
 # Tests for all AoC Puzzles
 
@@ -158,3 +160,11 @@ def test_day23_to_index_to_position():
         assert day23.to_index(x, 2) == 15 + i
         assert day23.to_position(11 + i) == (x, 1)
         assert day23.to_position(15 + i) == (x, 2)
+
+def test_day24():
+    assert run_day(24) == ('92969593497992', '81514171161381')
+
+def test_day24_interpret_answer():
+    inp = get_day_input(24)
+    assert day24.run(inp, 92969593497992) == 0
+    assert day24.run(inp, 81514171161381) == 0

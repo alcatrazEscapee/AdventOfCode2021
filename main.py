@@ -52,13 +52,16 @@ def main():
 def get_example(day: int, example: int) -> str:
     return get_input('./day%02d/examples.txt' % day).split('\n\n=====\n\n')[example - 1]
 
+def get_day_input(day: int) -> str:
+    return get_input('./day%02d/input.txt' % day)
+
 def run_day_with_example(day: int, example: int) -> PuzzleOutput:
     return run_day(day, get_example(day, example))
 
 def run_day(day: int, inp: Optional[str] = None) -> PuzzleOutput:
     if inp is None:
         try:
-            inp = get_input('./day%02d/input.txt' % day)
+            inp = get_day_input(day)
         except:
             inp = None
 
