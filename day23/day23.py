@@ -12,19 +12,6 @@ State = Tuple[str, ...]
 
 
 def main(text: str):
-
-    for i in range(1 + 10):
-        assert to_index(i, 0) == i
-
-    for i, x in zip(range(4), (2, 4, 6, 8)):
-        assert to_index(x, 1) == 11 + i
-        assert to_index(x, 2) == 15 + i
-        assert to_position(11 + i) == (x, 1)
-        assert to_position(15 + i) == (x, 2)
-
-    for i in range(40):
-        assert to_index(*to_position(i)) == i, 'i ' + str(i) + ' p ' + str(to_position(i)) + ', i0 = ' + str(to_index(*to_position(i)))
-
     # We are only interested in lines 2 and 3, which show the positions of the letters in the top and bottom rooms
     # We infer the rest of the structure of the hallway from the puzzle description
     _, _, top_row, bottom_row, _ = text.split('\n')
@@ -46,6 +33,7 @@ def main(text: str):
 def solve(start: State, end: State) -> int:
     queue: List[Tuple[int, State]] = [(0, start)]
     seen: Set[State] = set()
+    depth: int = get_depth(start)
     while queue:
         cost, state = heappop(queue)
 
@@ -66,37 +54,43 @@ def solve(start: State, end: State) -> int:
                     # Currently in a hallway
                     # Only allowable movement is to move into the target burrow
                     # Additionally, no other amphipods of a different letter must be present
-                    if is_hallway_clear(state, x, target_x) and (target_y := find_clear_burrow(state, pod, target_x)) != -1:
+                    if is_hallway_clear(state, x, target_x) and (target_y := find_clear_burrow(state, pod, target_x, depth)) != -1:
                         enqueue(queue, cost, abs(x - target_x) + target_y, state, pod, index, target_x, target_y)
                 else:
                     # Currently in a room
                     # There are two allowable moves: into a hallway, and into another room through a hallway
-                    # We compute the former ones first
+                    # Before computing both, we observe two optimizations:
+                    # 1. If we are already in our destination room (with no others below us), we don't move as this is optimal already
+                    if x == target_x and all(state[to_index(x, dy)] == pod for dy in range(1 + y, 1 + depth)):
+                        continue
+
+                    # 2. If we can move directly to the target room, we only do that, and don't try moving into a hallway first
                     if is_burrow_clear(state, x, y):
+                        # Now, compute valid moves from a burrow -> hallway -> burrow
+                        # We are still restricted as before, in only moving to the target burrow
+                        if is_hallway_clear(state, x, target_x) and (target_y := find_clear_burrow(state, pod, target_x, depth)) != -1:
+                            enqueue(queue, cost, abs(x - target_x) + y + target_y, state, pod, index, target_x, target_y)
+                            continue
+
                         for stop_x in HALLWAY_STOPS:
                             if is_hallway_clear(state, x, stop_x, False):
                                 # A valid move into the hallway is possible
                                 enqueue(queue, cost, abs(x - stop_x) + y, state, pod, index, stop_x, 0)
 
-                        # Now, compute valid moves from a burrow -> hallway -> burrow
-                        # We are still restricted as before, in only moving to the target burrow
-                        if is_hallway_clear(state, x, target_x) and (target_y := find_clear_burrow(state, pod, target_x)) != -1:
-                            enqueue(queue, cost, abs(x - target_x) + y + target_y, state, pod, index, target_x, target_y)
-
     raise ValueError('Termination without reaching the end')
+
+
+def enqueue(queue: List[Tuple[int, State]], cost: int, movement: int, state: State, pod: str, index: int, x: int, y: int):
+    destination = to_index(x, y)
+    next_state = tuple(
+        pod if i == destination else
+        ('.' if i == index else s)
+        for i, s in enumerate(state))
+    heappush(queue, (cost + movement * MOVEMENT_COST[pod], next_state))
 
 
 def row_of(row: str) -> State:
     return tuple(c for c in row if c in 'ABCD')
-
-def to_diagram(state: State) -> str:
-    return (
-        '#############\n' +
-        '#' + ''.join(state[i] for i in range(11)) + '#\n' +
-        (''.join(
-            ('  #%s#  \n' % '#'.join(state[to_index(BURROWS[j], y)] for j in range(4))).replace(' ', '#' if y == 1 else ' ')
-            for y in range(1, 1 + get_depth(state)))) +
-        '  #########  ')
 
 def to_index(x: int, y: int) -> int:
     """ Where x represents the horizontal movement, y is the hallway depth """
@@ -122,24 +116,15 @@ def is_hallway_clear(state: State, start_x: int, end_x: int, exclude_start_x: bo
     max_x = max(start_x, end_x)
     return all(state[to_index(x, 0)] == '.' or (exclude_start_x and x == start_x) for x in range(min_x, 1 + max_x))
 
-def find_clear_burrow(state: State, pod: str, target_x: int) -> int:
+def find_clear_burrow(state: State, pod: str, target_x: int, depth: int) -> int:
     """ Finds a clear position in the burrow for the given pod, if one exists """
     y = 0
-    depth = get_depth(state)
     while y < depth and state[to_index(target_x, y + 1)] == '.':
         y += 1
     if y > 0:  # Must have found at least one empty space
         if all(state[to_index(target_x, dy)] == pod for dy in range(1 + y, 1 + depth)):  # All deeper must be of the same type
             return y
     return -1  # Invalid burrow
-
-def enqueue(queue: List[Tuple[int, State]], cost: int, movement: int, state: State, pod: str, index: int, x: int, y: int):
-    destination = to_index(x, y)
-    next_state = tuple(
-        pod if i == destination else
-        ('.' if i == index else s)
-        for i, s in enumerate(state))
-    heappush(queue, (cost + movement * MOVEMENT_COST[pod], next_state))
 
 
 if __name__ == '__main__':
