@@ -168,3 +168,7 @@ def test_day24_interpret_answer():
     inp = get_day_input(24)
     assert day24.run(inp, 92969593497992) == 0
     assert day24.run(inp, 81514171161381) == 0
+
+def test_day25():
+    assert run_day_with_example(25, 1) == ('58', None)
+    assert run_day(25) == ('337', None)
