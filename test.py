@@ -1,9 +1,8 @@
 
-from main import run_day, run_day_with_example, get_day_input, get_example
+from main import run_day, resolve_input, example
 
 from day18 import day18
 from day22 import day22
-from day23 import day23
 from day24 import day24
 
 # Tests for all AoC Puzzles
@@ -43,20 +42,20 @@ def test_day11():
     assert run_day(11) == ('1683', '788')
 
 def test_day12():
-    assert run_day_with_example(12, 1) == ('10', '36')
-    assert run_day_with_example(12, 2) == ('19', '103')
-    assert run_day_with_example(12, 3) == ('226', '3509')
+    assert run_day(12, example(1)) == ('10', '36')
+    assert run_day(12, example(2)) == ('19', '103')
+    assert run_day(12, example(3)) == ('226', '3509')
     assert run_day(12) == ('4338', '114189')
 
 def test_day13():
     assert run_day(13) == ('810', 'HLBUBGFR')
 
 def test_day14():
-    assert run_day_with_example(14, 1) == ('1588', '2188189693529')
+    assert run_day(14, example(1)) == ('1588', '2188189693529')
     assert run_day(14) == ('2712', '8336623059567')
 
 def test_day15():
-    assert run_day_with_example(15, 1) == ('40', '315')
+    assert run_day(15, example(1)) == ('40', '315')
     assert run_day(15) == ('503', '2853')
 
 def test_day16():
@@ -121,11 +120,11 @@ def day18_magnitude(lists: day18.SnailfishNumber) -> int:
     return day18.convert(lists).magnitude()
 
 def test_day19():
-    assert run_day_with_example(19, 0) == ('79', '3621')
+    assert run_day(19, example(0)) == ('79', '3621')
     assert run_day(19) == ('365', '11060')
 
 def test_day20():
-    assert run_day_with_example(20, 0) == ('35', '3351')
+    assert run_day(20, example(0)) == ('35', '3351')
     assert run_day(20) == ('5846', '21149')
 
 def test_day21():
@@ -133,9 +132,9 @@ def test_day21():
     assert run_day(21) == ('571032', '49975322685009')
 
 def test_day22():
-    assert run_day_with_example(22, 1) == ('39', '39')
-    assert run_day_with_example(22, 2) == ('590784', '39769202357779')
-    assert run_day_with_example(22, 3) == ('474140', '2758514936282235')
+    assert run_day(22, example(1)) == ('39', '39')
+    assert run_day(22, example(2)) == ('590784', '39769202357779')
+    assert run_day(22, example(3)) == ('474140', '2758514936282235')
     assert run_day(22) == ('570915', '1268313839428137')
 
 def test_day22_coordinate_subdivisions():
@@ -143,32 +142,21 @@ def test_day22_coordinate_subdivisions():
     assert day22_coordinate_subdivision(2) == 39769202357779
     assert day22_coordinate_subdivision(3) == 2758514936282235
 
-def day22_coordinate_subdivision(example: int) -> int:
-    return day22.solve_part2_coordinate_subdivision(day22.parse(get_example(22, example)))
+def day22_coordinate_subdivision(num: int) -> int:
+    return day22.solve_part2_coordinate_subdivision(day22.parse(resolve_input(22, example(num))))
 
 def test_day23():
-    assert run_day_with_example(23, 1) == ('12521', '44169')
+    assert run_day(23, example(1)) == ('12521', '44169')
     assert run_day(23) == ('11120', '49232')
-
-def test_day23_to_index_to_position():
-    for i in range(1 + 10):
-        assert day23.to_index(i, 0) == i
-        assert day23.to_position(i) == (i, 0)
-
-    for i, x in zip(range(4), (2, 4, 6, 8)):
-        assert day23.to_index(x, 1) == 11 + i
-        assert day23.to_index(x, 2) == 15 + i
-        assert day23.to_position(11 + i) == (x, 1)
-        assert day23.to_position(15 + i) == (x, 2)
 
 def test_day24():
     assert run_day(24) == ('92969593497992', '81514171161381')
 
 def test_day24_interpret_answer():
-    inp = get_day_input(24)
+    inp = resolve_input(24)
     assert day24.run(inp, 92969593497992) == 0
     assert day24.run(inp, 81514171161381) == 0
 
 def test_day25():
-    assert run_day_with_example(25, 1) == ('58', None)
+    assert run_day(25, example(1)) == ('58', None)
     assert run_day(25) == ('337', None)
