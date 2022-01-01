@@ -1,4 +1,4 @@
-from utils import InfiniteGrid, get_input, ints
+from utils import get_input, ints
 from aoc_font import recognize
 
 
@@ -18,9 +18,12 @@ def main(text: str):
             part1 = True
             print('Part 1:', len(dots))
 
-    grid = InfiniteGrid.of_points(dots)
-    print('Part 2:', recognize(grid))
-    print(grid.map_values(lambda v: '\u2588' if v == '#' else ' '))
+    min_x, max_x, min_y, max_y = min(d[0] for d in dots), max(d[0] for d in dots), min(d[1] for d in dots), max(d[1] for d in dots)
+    print('\n'.join(''.join(
+        '\u2588' if (x, y) in dots else ' '
+        for x in range(min_x, 1 + max_x))
+        for y in range(min_y, 1 + max_y)))
+    print('Part 2:', recognize(dots, min_x, max_x, min_y, max_y))
 
 
 def mirror(v: int, k: int) -> int:

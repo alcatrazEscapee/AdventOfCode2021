@@ -1,6 +1,5 @@
 
-from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator, DefaultDict, Iterable, Mapping
-from collections import defaultdict
+from typing import Tuple, List, Optional, Sequence, Callable, Generic, TypeVar, NamedTuple, Generator, Iterable
 
 import re
 
@@ -23,10 +22,6 @@ def windows(x: Sequence[T], n: int) -> Generator[Tuple[T, ...], None, None]:
     if n <= len(x):
         for i in range(1 + len(x) - n):
             yield tuple(x[i:i + n])
-
-def min_max(x: Iterable[int]) -> Tuple[int, int]:
-    """ Returns both the min and max of a sequence. """
-    return min(seq := list(x)), max(seq)  # collapse single use iterators for re-use
 
 def sign(a: int) -> int:
     """ Returns the sign of a """
@@ -179,53 +174,3 @@ class FiniteGrid(Generic[T]):
         for y in range(self.height):
             for x in range(self.width):
                 yield Point2(x, y)
-
-    def infinite(self) -> 'InfiniteGrid[T]':
-        return InfiniteGrid(self.default, ((k, self[k]) for k in self.locations()))
-
-
-class InfiniteGrid(Generic[T]):
-
-    @staticmethod
-    def of_points(points: Iterable[Tuple[int, int]], default: T = '.', point: T = '#') -> 'InfiniteGrid[T]':
-        return InfiniteGrid(default, ((p, point) for p in points))
-
-    def __init__(self, default: Optional[T], fill: Iterable[Tuple[Tuple[int, int], T]]):
-        self.data: DefaultDict[Tuple[int, int], T] = defaultdict(lambda: default)
-        self.default: Optional[T] = default
-        for k, v in fill:
-            self.data[k] = v
-
-    def __getitem__(self, key: Tuple[int, int]) -> T:
-        return self.data[key]
-
-    def __setitem__(self, key: Tuple[int, int], value: T):
-        self.data[Point2(*key)] = value
-
-    def __contains__(self, key: Tuple[int, int]) -> bool:
-        return key in self.data
-
-    def __eq__(self, other):
-        return other is not None and isinstance(other, InfiniteGrid) and self.data == other.data
-
-    def __repr__(self):
-        _, _, width, height = self.bounds()
-        return '[%d x %d Infinite Grid]:\n%s' % (width, height, str(self))
-
-    def __str__(self) -> str:
-        min_x, min_y, width, height = self.bounds()
-        return '\n'.join(''.join(str(self[min_x + dx, min_y + dy]) for dx in range(width)) for dy in range(height))
-
-    def map_values(self, f: Callable[[T], V]) -> 'InfiniteGrid[V]':
-        return InfiniteGrid(f(self.default), ((k, f(v)) for k, v in self.data.items()))
-
-    def locations(self) -> Generator[Point2, None, None]:
-        """ An iterator over all coordinate positions within the grid """
-        for key in self.data.keys():
-            yield Point2(*key)
-
-    def bounds(self) -> Tuple[int, int, int, int]:
-        """ Returns the minimum bounding box of this grid, in a (min_x, min_y, width, height) tuple """
-        min_x, max_x = min_max((k.x for k in self.locations()))
-        min_y, max_y = min_max((k.y for k in self.locations()))
-        return min_x, min_y, 1 + max_x - min_x, 1 + max_y - min_y
